@@ -8,6 +8,10 @@ var generateMessage = (from, text) => {
   };
 };
 
+// var generateMediaMessage = (from, media) => {
+//
+// };
+
 var generateLocationMessage = (from, lat, lng) => {
   return {
     from,

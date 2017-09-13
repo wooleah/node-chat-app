@@ -4,7 +4,7 @@ const express = require('express');
 const socketIO = require('socket.io');
 
 const {generateMessage, generateLocationMessage} = require('./utils/message');
-const {isRealString} = require('./utils/validation');
+const {isRealString, isValidURL} = require('./utils/validation');
 const {Users} = require('./utils/users');
 const publicPath = path.join(__dirname, '../public');
 const port = process.env.PORT || 3000;
@@ -19,6 +19,8 @@ io.on('connection', (socket) => {//individual socket
   console.log('New user connected');
 
   socket.on('join', (params, callback) => {
+    //room name is case-insensitive
+    params.room = params.room.toLowerCase();
     //validate params
     if(!isRealString(params.name) || !isRealString(params.room)){
       return callback('Name and room name are required.');
@@ -27,6 +29,7 @@ io.on('connection', (socket) => {//individual socket
     socket.join(params.room);
     users.removeUser(socket.id);
     users.addUser(socket.id, params.name, params.room);
+
 
     io.to(params.room).emit('updateUserList',users.getUserList(params.room));
     socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app'));
@@ -38,6 +41,10 @@ io.on('connection', (socket) => {//individual socket
     // console.log('Got new message', message);
     var user = users.getUser(socket.id);
     if(user && isRealString(message.text)){
+      if(isValidURL(message.text)){
+        //error
+        message.text = message.text.replace(/!(((f|ht)tp(s)?://)[-a-zA-Zа-яА-Я()0-9@:%_+.~#?&;//=]+)!i/g, '<a href="$1">$1</a>');
+      }
       io.to(user.room).emit('newMessage', generateMessage(user.name, message.text));
     }
     callback();
