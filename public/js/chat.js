@@ -45,6 +45,13 @@ socket.on('updateUserList', function(users){
   $('#users').html(ol);
 });
 
+//dectect typing
+$('#message-form').on('keypress', function(){
+  socket.emit('typing', {
+    selector: $('#message-form')
+  });
+});
+
 socket.on('newMessage', function(message){
   var formattedTime = moment(message.createdAt).format('h:mm a');
   var template = $('#message-template').html();
@@ -62,7 +69,7 @@ socket.on('newLocationMessage', function(message){
   var formattedTime = moment(message.createdAt).format('h:mm a');
   var template = $('#location-message-template').html();
   var html = Mustache.render(template, {
-    from: message.from,
+    from: `<a class="ui ${message.color} small label inactiveLink">${message.from}</a>`,
     createdAt: formattedTime,
     url: message.url
   });

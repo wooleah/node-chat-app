@@ -13,10 +13,11 @@ var generateMessage = (from, text, color) => {
 //
 // };
 
-var generateLocationMessage = (from, lat, lng) => {
+var generateLocationMessage = (from, lat, lng, color) => {
   return {
     from,
     url: `https://www.google.com/maps?q=${lat},${lng}`,
+    color,
     createdAt: moment().valueOf()
   };
 };

@@ -3,6 +3,7 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 const linkifyHtml = require('linkifyjs/html');
+const TypingDetector = require('typing-detector');
 
 const {generateMessage, generateLocationMessage} = require('./utils/message');
 const {isRealString} = require('./utils/validation');
@@ -33,7 +34,12 @@ io.on('connection', (socket) => {//individual socket
     }
     //check if there is a client in given room with a same name
     if(users.getUserList(params.room).includes(params.name)){
-      return callback('Same name already exists in that room');
+      return callback('Same name already exists in that room!');
+    }
+
+    //Cannot make a new room with already existing name
+    if(users.getRoomList().includes(params.room)){
+      return callback('Same room name already exists!');
     }
 
     //one of 12 colors will be chosen from messageColorArr
@@ -70,8 +76,17 @@ io.on('connection', (socket) => {//individual socket
   socket.on('createLocationMessage', (coords) => {
     var user = users.getUser(socket.id);
     if(user){
-      io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude));
+      io.to(user.room).emit('newLocationMessage', generateLocationMessage(user.name, coords.latitude, coords.longitude, user.color));
     }
+  });
+
+//https://www.npmjs.com/package/typing-detector
+  socket.on('typing', function(selector){
+    const typingDetector = new TypingDetector({
+      selector: selector.selector,
+      timeout: 2000,
+      wait: 2
+    });
   });
 
   //DISCONNECTING
