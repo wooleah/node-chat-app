@@ -40,21 +40,17 @@ socket.on('updateUserList', function(users){
 
   users.forEach(function(user){
     ol.append($('<li></li>').text(user));
-  })
+  });
 
   $('#users').html(ol);
 });
-
-// socket.on('updateUserList', function(users){
-//   console.log('Users list: ',users);
-// });
 
 socket.on('newMessage', function(message){
   var formattedTime = moment(message.createdAt).format('h:mm a');
   var template = $('#message-template').html();
   var html = Mustache.render(template, {
     text: message.text,
-    from: message.from,
+    from: `<a class="ui ${message.color} small label inactiveLink">${message.from}</a>`,
     createdAt: formattedTime
   });
 
@@ -105,5 +101,13 @@ locationButton.on('click', function(){
       locationButton.removeAttr('disabled').text('Send Location');
       alert('Unable to fetch location');
     });
+  }
+});
+
+// CHATROOM - LEAVE BUTTON
+var leaveButton = $('.chat__leave');
+leaveButton.on('click', function(){
+  if(confirm('Leave the room?')){
+    window.location.href = '/';
   }
 });

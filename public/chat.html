@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <title>Chat | ChatApp</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/label.min.css">
     <link rel="stylesheet" href="/css/styles.css">
   </head>
   <body class="chat">
@@ -13,7 +15,12 @@
       <div id="users"></div>
     </div>
 
+    <!-- Main Chat room space -->
     <div class="chat__main">
+      <!-- Leave the chatroom icon -->
+      <div class="chat__leave">
+        <i class="fa fa-times" aria-hidden="true"></i>
+      </div>
       <ol id="messages" class="chat__messages"></ol>
       <div class="chat__footer">
         <form id="message-form">
@@ -25,15 +32,14 @@
     </div>
 
     <!-- message templates -->
-
     <script id="message-template" type="text/template">
       <li class="message">
         <div class="message__title">
-          <h4>{{from}}</h4>
+          <h4>{{{from}}}</h4>
           <span>{{createdAt}}</span>
         </div>
         <div class="message__body">
-          <p>{{text}}</p>
+          <p>{{{text}}}</p>
         </div>
       </li>
     </script>
@@ -49,7 +55,9 @@
         </div>
       </li>
     </script>
+    <!-- end of message templates -->
 
+    <!-- libraries -->
     <script type="text/javascript" src="/socket.io/socket.io.js"></script>
     <script type="text/javascript" src="/js/libs/jquery-3.2.1.min.js"></script>
     <script type="text/javascript" src="/js/libs/moment.js"></script>

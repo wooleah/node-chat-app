@@ -83,6 +83,13 @@ button:disabled {
   display: flex;
 }
 
+.chat__leave {
+  position: absolute;
+  top: 2%;
+  right: 5%;
+  font-size: 2em;
+}
+
 .chat__sidebar {
   overflow-y: scroll;
   width: 260px;
@@ -154,6 +161,11 @@ button:disabled {
   padding: 10px;
 }
 
+.inactiveLink {
+   pointer-events: none;
+   cursor: default;
+}
+
 .message {
   padding: 10px;
 }
@@ -170,6 +182,35 @@ button:disabled {
 
 .message__title span {
   color: #999;
+}
+
+.room__sidebar {
+  position: absolute;
+  left: 0;
+  overflow-y: scroll;
+  width: 260px;
+  height: 100vh;
+  background: #485563;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #29323c, #485563);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #29323c, #485563); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+.room__sidebar h3 {
+  color: #e6eaee;
+  margin: 10px 20px;
+  text-align: left;
+}
+
+.room__sidebar ol {
+  list-style-type: none;
+}
+
+.room__sidebar li {
+  background: #e6eaee;
+  border: 1px solid #e1e1e1;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px;
 }
 
 @media (max-width: 600px) {

@@ -6,9 +6,10 @@
 class Users {
   constructor() {
     this.users = [];
+    this.roomList = [];
   }
-  addUser(id, name, room){
-    var user = {id, name, room};
+  addUser(id, name, room, color){
+    var user = {id, name, room, color};
     this.users.push(user);
     return user;
   }
@@ -27,6 +28,21 @@ class Users {
     //users is an array of objects -> convert it to string
     var namesArray = users.map((user) => user.name);
     return namesArray;
+  }
+
+  addRoom(room){
+    if(!this.roomList.includes(room)){
+        this.roomList.push(room);
+        return room;
+    }
+    return null;
+  }
+  removeRoom(room){
+    var modifiedRoomList = this.roomList.filter((eachroom) => eachroom !== room);
+    return this.roomList = modifiedRoomList;
+  }
+  getRoomList(){
+    return this.roomList;
   }
 }
 
