@@ -50,7 +50,12 @@ io.on('connection', (socket) => {//individual socket
     io.emit('updateRoomList', users.getRoomList());
     io.to(params.room).emit('updateUserList',users.getUserList(params.room));
 
-    socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app', 'red'));
+    //Add icon to current user(socket)
+    socket.on('keepCurrentUserMark', () => {
+      socket.emit('showCurrentUser', users.getUser(socket.id));
+    });
+
+    socket.emit('newMessage', generateMessage('Admin', `Welcome to the chat app, ${params.name}.`, 'red'));
     socket.broadcast.to(params.room).emit('newMessage', generateMessage('Admin', `${params.name} has joined`, 'red'));
     callback();
   });

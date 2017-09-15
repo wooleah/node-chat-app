@@ -38,6 +38,10 @@ button:disabled {
   background: #698ea5;
 }
 
+#users li {
+  position: relative;
+}
+
 .centered-form {
   display: flex;
   align-items: center;
@@ -59,6 +63,12 @@ button:disabled {
   padding: 0px 20px;
   margin: 20px;
   width: 230px;
+}
+
+.fa-user-circle-o {
+  position: absolute;
+  right: 1em;
+  top:30%;
 }
 
 .form-field {

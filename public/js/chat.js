@@ -18,6 +18,7 @@ function scrollToBottom(){
   }
 };
 
+//CONNECT
 socket.on('connect', function () {
   // console.log('Connected to server');
   var params = $.deparam(window.location.search);
@@ -31,10 +32,12 @@ socket.on('connect', function () {
   });
 });
 
+//DISCONNECT
 socket.on('disconnect', function () {
   console.log('disconnected from server');
 });
 
+//UPDATE USER LIST
 socket.on('updateUserList', function(users){
   var ol = $('<ol></ol>');
 
@@ -47,7 +50,16 @@ socket.on('updateUserList', function(users){
   var currentPeople = $('#current-people').children('span');
   var currentPeopleNum = users.length;
   currentPeople.html(`<a class="ui grey circular label">${currentPeopleNum}</a>`);
+
+  socket.emit('keepCurrentUserMark');
 });
+
+//ADD ICON TO CURRENT USER
+socket.on('showCurrentUser', function(user){
+  var username = user.name;
+  $(`#users li:contains('${username}')`).html(`${username} <i title="This is you!" class="fa fa-user-circle-o" aria-hidden="true"></i>`);
+});
+
 
 //DETECT TYPING - CLIENT
 var timer = null;
@@ -83,6 +95,7 @@ socket.on('typingMessage', function(data){
     $(`.${user.name}typingMessage`).remove();
   }
 });
+//DETECT TYPING - END
 
 //NEW MESSAGE
 socket.on('newMessage', function(message){
@@ -102,6 +115,7 @@ socket.on('newMessage', function(message){
   scrollToBottom();
 });
 
+//NEW LOCATION MESSAGE
 socket.on('newLocationMessage', function(message){
   var formattedTime = moment(message.createdAt).format('h:mm a');
   var template = $('#location-message-template').html();
@@ -119,6 +133,7 @@ socket.on('newLocationMessage', function(message){
   scrollToBottom();
 });
 
+//SEND BUTTON ACTION
 $('#message-form').on('submit', function(e){//event argument
   e.preventDefault();
   var messageTextbox = $('[name=message]')
@@ -130,6 +145,7 @@ $('#message-form').on('submit', function(e){//event argument
   });
 });
 
+//SEND LOCATION BUTTON ACTION
 var locationButton = $('#send-location');
 locationButton.on('click', function(){
   if(!navigator.geolocation){
