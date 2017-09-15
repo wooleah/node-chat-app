@@ -3,7 +3,6 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 const linkifyHtml = require('linkifyjs/html');
-const TypingDetector = require('typing-detector');
 
 const {generateMessage, generateLocationMessage} = require('./utils/message');
 const {isRealString} = require('./utils/validation');
@@ -37,11 +36,6 @@ io.on('connection', (socket) => {//individual socket
       return callback('Same name already exists in that room!');
     }
 
-    //Cannot make a new room with already existing name
-    if(users.getRoomList().includes(params.room)){
-      return callback('Same room name already exists!');
-    }
-
     //one of 12 colors will be chosen from messageColorArr
     const messageColorArr = ['red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'violet', 'purple', 'pink', 'brown', 'grey', 'black'];
     const randomNum = Math.floor(Math.random()*12);
@@ -53,6 +47,7 @@ io.on('connection', (socket) => {//individual socket
     users.addRoom(params.room);
     // console.log(users.getRoomList());
 
+    io.emit('updateRoomList', users.getRoomList());
     io.to(params.room).emit('updateUserList',users.getUserList(params.room));
 
     socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat app', 'red'));
@@ -80,13 +75,12 @@ io.on('connection', (socket) => {//individual socket
     }
   });
 
-//https://www.npmjs.com/package/typing-detector
-  socket.on('typing', function(selector){
-    const typingDetector = new TypingDetector({
-      selector: selector.selector,
-      timeout: 2000,
-      wait: 2
-    });
+//DETECT TYPING
+  socket.on('typing', (typing) => {
+    var user = users.getUser(socket.id);
+    if(user){
+        socket.broadcast.to(user.room).emit('typingMessage', {user, typing});
+    }
   });
 
   //DISCONNECTING

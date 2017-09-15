@@ -9,5 +9,9 @@ socket.on('connect', function(){
       ol.append($('<li></li>').text(room));
     });
     $('#rooms').html(ol);
+
+    var span = $('#available-room').children("span");
+    var availableRoomNum = rooms.length;
+    span.html(`<a class="ui tag tiny label">${availableRoomNum}</a>`);
   });
 });

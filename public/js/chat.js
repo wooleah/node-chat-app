@@ -41,17 +41,50 @@ socket.on('updateUserList', function(users){
   users.forEach(function(user){
     ol.append($('<li></li>').text(user));
   });
-
   $('#users').html(ol);
+
+  //CHATROOM - NUMBER OF PEOPLE
+  var currentPeople = $('#current-people').children('span');
+  var currentPeopleNum = users.length;
+  currentPeople.html(`<a class="ui grey circular label">${currentPeopleNum}</a>`);
 });
 
-//dectect typing
-$('#message-form').on('keypress', function(){
-  socket.emit('typing', {
-    selector: $('#message-form')
-  });
+//DETECT TYPING - CLIENT
+var timer = null;
+var typingFlag = false;
+
+var timeout = function(){
+  typingFlag = false;
+  socket.emit('typing', false);
+}
+
+$('#message-form').keypress(function(e){
+  if(e.which !== 13){
+    if(typingFlag === false){
+      typingFlag = true;
+      socket.emit('typing', true);
+    }else{
+      clearTimeout(timer);
+      timer = setTimeout(timeout, 700);
+    }
+  }
 });
 
+socket.on('typingMessage', function(data){
+  var user = data.user;
+  var typing = data.typing;
+
+  if(typing){
+    if($(`.${user.name}typingMessage`).length === 0){
+      $('#messages').append(`<li class="${user.name}typingMessage"><a class="ui ${user.color} tiny label inactiveLink">${user.name} is typing ...</a></li>`);
+      timer = setTimeout(timeout, 700);
+    }
+  }else{
+    $(`.${user.name}typingMessage`).remove();
+  }
+});
+
+//NEW MESSAGE
 socket.on('newMessage', function(message){
   var formattedTime = moment(message.createdAt).format('h:mm a');
   var template = $('#message-template').html();
@@ -60,6 +93,10 @@ socket.on('newMessage', function(message){
     from: `<a class="ui ${message.color} small label inactiveLink">${message.from}</a>`,
     createdAt: formattedTime
   });
+  //remove typing message
+  $(`.${message.from}typingMessage`).remove();
+  clearTimeout(timer);
+  timer = setTimeout(timeout, 0);
 
   $('#messages').append(html);
   scrollToBottom();
@@ -73,6 +110,10 @@ socket.on('newLocationMessage', function(message){
     createdAt: formattedTime,
     url: message.url
   });
+  //remove typing message
+  $(`.${message.from}typingMessage`).remove();
+  clearTimeout(timer);
+  timer = setTimeout(timeout, 0);
 
   $('#messages').append(html);
   scrollToBottom();
