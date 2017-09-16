@@ -10,6 +10,7 @@ socket.on('connect', function(){
     });
     $('#rooms').html(ol);
 
+    // Adding number icon showing available rooms
     var span = $('#available-room').children("span");
     var availableRoomNum = rooms.length;
     span.html(`<a class="ui tag tiny label">${availableRoomNum}</a>`);

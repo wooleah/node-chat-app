@@ -70,6 +70,7 @@ var timeout = function(){
   socket.emit('typing', false);
 }
 
+// Typing event is sent only when user presses non-enter key
 $('#message-form').keypress(function(e){
   if(e.which !== 13){
     if(typingFlag === false){

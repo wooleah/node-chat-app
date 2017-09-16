@@ -108,6 +108,6 @@ io.on('connection', (socket) => {//individual socket
   });
 });
 
-server.listen(port, () => { //this calls http.createServer()
+server.listen(port, () => {
   console.log(`server is listening to port ${port}`);
 });
