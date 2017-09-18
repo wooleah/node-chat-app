@@ -27,6 +27,8 @@ socket.on('connect', function () {
       alert(err);
       window.location.href = '/';
     }else{
+      // history.pushState(null, '', '/chat');
+
       console.log('No error');
     }
   });
@@ -90,6 +92,7 @@ socket.on('typingMessage', function(data){
   if(typing){
     if($(`.${user.name}typingMessage`).length === 0){
       $('#messages').append(`<li class="${user.name}typingMessage"><a class="ui ${user.color} tiny label inactiveLink">${user.name} is typing ...</a></li>`);
+      scrollToBottom();
       timer = setTimeout(timeout, 700);
     }
   }else{
@@ -113,6 +116,7 @@ socket.on('newMessage', function(message){
   timer = setTimeout(timeout, 0);
 
   $('#messages').append(html);
+  $(`.${message.from}typingMessage`).remove();
   scrollToBottom();
 });
 

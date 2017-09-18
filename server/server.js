@@ -35,6 +35,20 @@ io.on('connection', (socket) => {//individual socket
     if(users.getUserList(params.room).includes(params.name)){
       return callback('Same name already exists in that room!');
     }
+    //make sure username is not Admin
+    if(params.name === 'Admin'||params.name ==='admin'){
+      return callback('You cannot be an Admin.');
+    }
+    //username cannot include special characters
+    var username = params.name;
+    if(/^[a-zA-Z0-9- ]*$/.test(username) === false) {
+    return callback('Your username contains illegal characters.');
+    }
+    //roomname cannot include special characters
+    var roomname = params.room;
+    if(/^[a-zA-Z0-9- ]*$/.test(roomname) === false) {
+    return callback('Your roomname contains illegal characters.');
+    }
 
     //one of 12 colors will be chosen from messageColorArr
     const messageColorArr = ['red', 'orange', 'yellow', 'olive', 'green', 'teal', 'blue', 'violet', 'purple', 'pink', 'brown', 'grey', 'black'];
