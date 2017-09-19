@@ -40,15 +40,11 @@ io.on('connection', (socket) => {//individual socket
       return callback('You cannot be an Admin.');
     }
     //username and roomname cannot include special characters
-    var specialChar = ['!', '?', '#', '&', '+', '*', '='];
+    var format = /[!@?#&+=$]/;
     var checkSpecialChar = (str) => {
-      specialChar.forEach((char) => {
-        if(str.includes(char)){
-          return true
-        }
-      });
-      return false;
+      return format.test(str);
     }
+    console.log(checkSpecialChar(params.name));
     if(checkSpecialChar(params.name)) {
       return callback('Your username contains illegal characters.');
     }

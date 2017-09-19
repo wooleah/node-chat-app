@@ -91,7 +91,13 @@ socket.on('typingMessage', function(data){
 
   if(typing){
     if($(`.${user.name}typingMessage`).length === 0){
-      $('#messages').append(`<li class="${user.name}typingMessage"><a class="ui ${user.color} tiny label inactiveLink">${user.name} is typing ...</a></li>`);
+      var template = $('#typing-message-template').html();
+      var html = Mustache.render(template, {
+        from: `<a class="ui ${user.color} tiny label inactiveLink">${user.name}</a>`,
+        username: user.name
+      });
+      $('#messages').append(html);
+      // $('#messages').append(`<li class="${user.name}typingMessage"><a class="ui ${user.color} tiny label inactiveLink">${user.name} is typing ...</a></li>`);
       scrollToBottom();
       timer = setTimeout(timeout, 700);
     }
