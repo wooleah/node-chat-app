@@ -44,7 +44,6 @@ io.on('connection', (socket) => {//individual socket
     var checkSpecialChar = (str) => {
       return format.test(str);
     }
-    console.log(checkSpecialChar(params.name));
     if(checkSpecialChar(params.name)) {
       return callback('Your username contains illegal characters.');
     }
@@ -65,8 +64,14 @@ io.on('connection', (socket) => {//individual socket
 
     socket.join(params.room);
     users.removeUser(socket.id);
-    users.addUser(socket.id, params.name, params.room, randomColor);
+    //first user to make room becomes roomowner
+    var roomOwnership = false;
+    if(!users.getRoomList().includes(params.room)){
+      roomOwnership = true;
+    }
+    users.addUser(socket.id, params.name, params.room, randomColor, roomOwnership);
     users.addRoom(params.room);
+
     // console.log(users.getRoomList());
 
     io.emit('updateRoomList', users.getRoomList());

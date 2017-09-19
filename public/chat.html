@@ -6,12 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/label.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/components/icon.min.css">
     <link rel="stylesheet" href="/css/styles.css">
   </head>
   <body class="chat">
 
     <div class="chat__sidebar">
-      <h3 id="current-people" class="inactiveLink">People &nbsp;<span></span></h3>
+      <h3 id="current-people" >People &nbsp;<span class="inactiveLink"></span></h3>
       <div id="users"></div>
     </div>
 
@@ -19,7 +20,10 @@
     <div class="chat__main">
       <!-- Leave the chatroom icon -->
       <div class="chat__leave">
-        <i class="fa fa-times" aria-hidden="true"></i>
+        <i title="Leave chatroom" class="fa fa-times" aria-hidden="true"></i>
+      </div>
+      <div class="chat__sidebar-hide">
+        <i title="Hide Sidebar" class="angle left icon big"></i>
       </div>
       <!-- Messages are appended here -->
       <ol id="messages" class="chat__messages"></ol>

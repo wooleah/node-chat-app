@@ -44,7 +44,15 @@ socket.on('updateUserList', function(users){
   var ol = $('<ol></ol>');
 
   users.forEach(function(user){
-    ol.append($('<li></li>').text(user));
+    if(user.roomowner){
+      //<i class="remove user icon"></i>
+      console.log(`${user.name} is the roomowner`);
+      ol.append($(`<li>${user.name}<i class="remove user icon"></i></li>`));
+    }else{
+      console.log(`${user} is not the roomowner`);
+
+      ol.append($('<li></li>').text(user));
+    }
   });
   $('#users').html(ol);
 
@@ -56,10 +64,11 @@ socket.on('updateUserList', function(users){
   socket.emit('keepCurrentUserMark');
 });
 
-//ADD ICON TO CURRENT USER
+//ADD ICON AND COLOR TO CURRENT USER
 socket.on('showCurrentUser', function(user){
   var username = user.name;
-  $(`#users li:contains('${username}')`).html(`${username} <i title="This is you!" class="fa fa-user-circle-o" aria-hidden="true"></i>`);
+  var usercolor = user.color;
+  $(`#users li:contains('${username}')`).html(`${username} <a class="usercolor-icon inactiveLink ui ${usercolor} mini circular label"></a><i title="This is you!" class="fa fa-user-circle-o" aria-hidden="true"></i>`);
 });
 
 
@@ -184,5 +193,23 @@ var leaveButton = $('.chat__leave');
 leaveButton.on('click', function(){
   if(confirm('Leave the room?')){
     window.location.href = '/';
+  }
+});
+
+//CHAT SIDEBAR - HIDE BUTTON
+var hideSidebarButton = $('.chat__sidebar-hide i');
+var chatSidebar = $('.chat__sidebar');
+var sidebarStatus = true;
+hideSidebarButton.on('click', function(){
+  if(sidebarStatus){
+    chatSidebar.css('width', '0');
+    hideSidebarButton.removeClass('left');
+    hideSidebarButton.addClass('right');
+    sidebarStatus = false;
+  }else{
+    chatSidebar.css('width', '260');
+    hideSidebarButton.removeClass('right');
+    hideSidebarButton.addClass('left');
+    sidebarStatus = true;
   }
 });

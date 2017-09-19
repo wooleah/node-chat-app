@@ -8,8 +8,8 @@ class Users {
     this.users = [];
     this.roomList = [];
   }
-  addUser(id, name, room, color){
-    var user = {id, name, room, color};
+  addUser(id, name, room, color, roomowner){
+    var user = {id, name, room, color, roomowner};
     this.users.push(user);
     return user;
   }
