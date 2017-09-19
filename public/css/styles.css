@@ -77,14 +77,28 @@ button:disabled {
 
 .fa-user-circle-o {
   position: absolute;
-  right: 1em;
+  right: 1rem;
   top:30%;
+  font-size: 1.1rem;
 }
 
 .usercolor-icon {
   position: absolute;
-  right: 3.5em;
+  right: 2.5rem;
   top:25%;
+}
+
+.remove.user.icon {
+  position: absolute;
+  right: 0.63rem;
+  top:30%;
+}
+
+.star.icon {
+  position: absolute;
+  right: 4rem;
+  top:30%;
+  font-size: 1.1rem;
 }
 
 .form-field {
@@ -197,7 +211,7 @@ button:disabled {
 
 .inactiveLink {
    pointer-events: none;
-   cursor: default;
+   cursor: text;
 }
 
 .message {

@@ -32,7 +32,7 @@ io.on('connection', (socket) => {//individual socket
       //if the data is invalid, code will stop here
     }
     //check if there is a client in given room with a same name
-    if(users.getUserList(params.room).includes(params.name)){
+    if(users.getUsernameList(params.room).includes(params.name)){
       return callback('Same name already exists in that room!');
     }
     //make sure username is not Admin
@@ -64,22 +64,21 @@ io.on('connection', (socket) => {//individual socket
 
     socket.join(params.room);
     users.removeUser(socket.id);
-    //first user to make room becomes roomowner
-    var roomOwnership = false;
-    if(!users.getRoomList().includes(params.room)){
-      roomOwnership = true;
-    }
-    users.addUser(socket.id, params.name, params.room, randomColor, roomOwnership);
+    users.addUser(socket.id, params.name, params.room, randomColor);
     users.addRoom(params.room);
-
-    // console.log(users.getRoomList());
 
     io.emit('updateRoomList', users.getRoomList());
     io.to(params.room).emit('updateUserList',users.getUserList(params.room));
 
     //Add icon to current user(socket)
     socket.on('keepCurrentUserMark', () => {
-      socket.emit('showCurrentUser', users.getUser(socket.id));
+      var user = users.getUser(socket.id);
+      socket.emit('showCurrentUser', {
+        currentUser: user,
+        allUsernames: users.getUsernameList(user.room),
+        allUsers: users.getUserList(user.room)
+      });
+      // socket.emit('showCurrentUser', user);
     });
 
     socket.emit('newMessage', generateMessage('Admin', `Welcome to the chat app, ${params.name}.`, 'red'));
@@ -115,6 +114,19 @@ io.on('connection', (socket) => {//individual socket
     }
   });
 
+  //KICKOUT A USER
+  socket.on('kickout', (clickedUser) => {
+    var currentRoom = users.getUser(socket.id).room;
+    var usersinRoom = users.getUserList(currentRoom);
+    usersinRoom.forEach((user) => {
+      if(user.name === clickedUser){
+        var targetuser = io.sockets.connected[user.id];
+        targetuser.emit('kickoutMessage');
+        targetuser.disconnect();
+      }
+    });
+  });
+
   //DISCONNECTING
   socket.on('disconnect', () => {
     console.log('User disconnected');
@@ -125,11 +137,11 @@ io.on('connection', (socket) => {//individual socket
         if(err) throw error;
         if(clients.length < 1){
           users.removeRoom(user.room);
-          // console.log(users.getRoomList());
           io.emit('updateRoomList', users.getRoomList());
         }
       });
       io.to(user.room).emit('updateUserList', users.getUserList(user.room));
+      io.to(user.room).emit('deleteTypingMessage', user.name);
       io.to(user.room).emit('newMessage', generateMessage('Admin', `${user.name} has left`, 'red'));
     }
   });

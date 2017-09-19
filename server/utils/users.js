@@ -8,8 +8,8 @@ class Users {
     this.users = [];
     this.roomList = [];
   }
-  addUser(id, name, room, color, roomowner){
-    var user = {id, name, room, color, roomowner};
+  addUser(id, name, room, color){
+    var user = {id, name, room, color};
     this.users.push(user);
     return user;
   }
@@ -24,6 +24,10 @@ class Users {
     return this.users.find((user) => user.id === id);
   }
   getUserList(room){
+    var users = this.users.filter((user) => user.room === room);
+    return users;
+  }
+  getUsernameList(room){
     var users = this.users.filter((user) => user.room === room);
     //users is an array of objects -> convert it to string
     var namesArray = users.map((user) => user.name);

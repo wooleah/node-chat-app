@@ -37,6 +37,7 @@ socket.on('connect', function () {
 //DISCONNECT
 socket.on('disconnect', function () {
   console.log('disconnected from server');
+  window.location.href = '/';
 });
 
 //UPDATE USER LIST
@@ -44,15 +45,7 @@ socket.on('updateUserList', function(users){
   var ol = $('<ol></ol>');
 
   users.forEach(function(user){
-    if(user.roomowner){
-      //<i class="remove user icon"></i>
-      console.log(`${user.name} is the roomowner`);
-      ol.append($(`<li>${user.name}<i class="remove user icon"></i></li>`));
-    }else{
-      console.log(`${user} is not the roomowner`);
-
-      ol.append($('<li></li>').text(user));
-    }
+    ol.append($(`<li>${user.name}<a class="usercolor-icon inactiveLink ui ${user.color} mini circular label"></a></li>`));
   });
   $('#users').html(ol);
 
@@ -64,11 +57,27 @@ socket.on('updateUserList', function(users){
   socket.emit('keepCurrentUserMark');
 });
 
-//ADD ICON AND COLOR TO CURRENT USER
-socket.on('showCurrentUser', function(user){
-  var username = user.name;
-  var usercolor = user.color;
-  $(`#users li:contains('${username}')`).html(`${username} <a class="usercolor-icon inactiveLink ui ${usercolor} mini circular label"></a><i title="This is you!" class="fa fa-user-circle-o" aria-hidden="true"></i>`);
+//ADD ICON, COLOR, AND KICKOUT ICON TO CURRENT USER INTERFACE
+socket.on('showCurrentUser', function(userdata){
+  var currentUser = userdata.currentUser;
+  var usernames = userdata.allUsernames;
+  var users = userdata.allUsers;
+  var currentUsername = currentUser.name;
+  //if the user is first on the list(meaning the user is roomowner)
+  // alert(`${currentUsername} is the king!`);
+  if(usernames[0] === currentUsername){
+    users.forEach(function(user){
+      //only add kickout icon to not currentUser
+      if(!(user.name === currentUsername)){
+        $(`#users li:contains('${user.name}')`).html(`${user.name}<a class="usercolor-icon inactiveLink ui ${user.color} mini circular label"></a><i title="Kick out this user" class="remove user icon"></i>`);
+      }else{
+        $(`#users li:contains('${currentUsername}')`).html(`${currentUsername}<i title="You are the king of this room!" class="star icon"></i><a title="This is your color" class="usercolor-icon inactiveLink ui ${currentUser.color} mini circular label"></a><i title="This is you!" class="fa fa-user-circle-o" aria-hidden="true"></i>`);
+      }
+    });
+  }else{
+    $(`#users li:contains('${currentUsername}')`).html(`${currentUsername}<a title="This is your color" class="usercolor-icon inactiveLink ui ${currentUser.color} mini circular label"></a><i title="This is you!" class="fa fa-user-circle-o" aria-hidden="true"></i>`);
+  }
+  //add currentUserIcon to currentUser
 });
 
 
@@ -113,6 +122,10 @@ socket.on('typingMessage', function(data){
   }else{
     $('li').remove(`.${user.name}typingMessage`);
   }
+});
+//delete typingMessage when user leaves the room
+socket.on('deleteTypingMessage', function(username){
+  $('li').remove(`.${username}typingMessage`);
 });
 //DETECT TYPING - END
 
@@ -212,4 +225,13 @@ hideSidebarButton.on('click', function(){
     hideSidebarButton.addClass('left');
     sidebarStatus = true;
   }
+});
+
+//CHAT SIDEBAR - KICKOUT USER
+$('#users').on('click','i.remove.user.icon', function(){
+  var clickedUser = $(this).parent().text();
+  socket.emit('kickout', clickedUser);
+});
+socket.on('kickoutMessage', function(){
+  alert('You were kicked out.');
 });
