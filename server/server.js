@@ -39,15 +39,27 @@ io.on('connection', (socket) => {//individual socket
     if(params.name === 'Admin'||params.name ==='admin'){
       return callback('You cannot be an Admin.');
     }
-    //username cannot include special characters
-    var username = params.name;
-    if(/^[a-zA-Z0-9- ]*$/.test(username) === false) {
-    return callback('Your username contains illegal characters.');
+    //username and roomname cannot include special characters
+    var specialChar = ['!', '?', '#', '&', '+', '*', '='];
+    var checkSpecialChar = (str) => {
+      specialChar.forEach((char) => {
+        if(str.includes(char)){
+          return true
+        }
+      });
+      return false;
     }
-    //roomname cannot include special characters
-    var roomname = params.room;
-    if(/^[a-zA-Z0-9- ]*$/.test(roomname) === false) {
-    return callback('Your roomname contains illegal characters.');
+    if(checkSpecialChar(params.name)) {
+      return callback('Your username contains illegal characters.');
+    }
+    if(checkSpecialChar(params.room)) {
+      return callback('Your roomname contains illegal characters.');
+    }
+
+    //username and roomname cannot be more than 20 characters long
+    if(params.name.length > 20 || params.room.length > 20){
+      console.log(params.name.length);
+      return callback('Username and roomname cannot be more than 20 characters.');
     }
 
     //one of 12 colors will be chosen from messageColorArr

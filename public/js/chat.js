@@ -73,7 +73,7 @@ var timeout = function(){
 }
 
 // Typing event is sent only when user presses non-enter key
-$('#message-form').keypress(function(e){
+$('#message-form').keydown(function(e){
   if(e.which !== 13){
     if(typingFlag === false){
       typingFlag = true;
@@ -96,7 +96,7 @@ socket.on('typingMessage', function(data){
       timer = setTimeout(timeout, 700);
     }
   }else{
-    $(`.${user.name}typingMessage`).remove();
+    $('li').remove(`.${user.name}typingMessage`);
   }
 });
 //DETECT TYPING - END
@@ -111,12 +111,12 @@ socket.on('newMessage', function(message){
     createdAt: formattedTime
   });
   //remove typing message
-  $(`.${message.from}typingMessage`).remove();
+  $('li').remove(`.${message.from}typingMessage`);
   clearTimeout(timer);
   timer = setTimeout(timeout, 0);
 
   $('#messages').append(html);
-  $(`.${message.from}typingMessage`).remove();
+  $('li').remove(`.${message.from}typingMessage`);
   scrollToBottom();
 });
 
@@ -130,7 +130,7 @@ socket.on('newLocationMessage', function(message){
     url: message.url
   });
   //remove typing message
-  $(`.${message.from}typingMessage`).remove();
+  $('li').remove(`.${message.from}typingMessage`);
   clearTimeout(timer);
   timer = setTimeout(timeout, 0);
 
