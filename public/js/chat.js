@@ -68,6 +68,8 @@ socket.on('showCurrentUser', function(userdata){
   if(usernames[0] === currentUsername){
     users.forEach(function(user){
       //only add kickout icon to not currentUser
+      console.log('user.name: ', user.name);
+      console.log('currentUsername: ', currentUsername);
       if(!(user.name === currentUsername)){
         $(`#users li:contains('${user.name}')`).html(`${user.name}<a class="usercolor-icon inactiveLink ui ${user.color} mini circular label"></a><i title="Kick out this user" class="remove user icon"></i>`);
       }else{

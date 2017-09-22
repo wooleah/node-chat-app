@@ -69,6 +69,7 @@ io.on('connection', (socket) => {//individual socket
 
     io.emit('updateRoomList', users.getRoomList());
     io.to(params.room).emit('updateUserList',users.getUserList(params.room));
+    // socket.to(params.room).emit('updateUserList',users.getUserList(params.room));
 
     //Add icon to current user(socket)
     socket.on('keepCurrentUserMark', () => {
